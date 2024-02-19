@@ -15,6 +15,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
@@ -33,7 +34,8 @@ public class MainView extends HorizontalLayout {
     Si los definimos dentro de MainView habría que definir button, por ejempo, 
     antes de poder usarlo en el evento click
      */
-    private H1 cartel = new H1("PRACTICANDO CON VAADIN");
+    private H1 cartelUsuario = new H1("PRACTICANDO CON VAADIN");
+    private H2 cartelServicios= new H2("SERVICIOS");
     private Button nuevo = new Button("Nuevo");
     private Button ok = new Button("Aceptar");
     private Button cancel = new Button("Cancelar");
@@ -61,12 +63,12 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
     public MainView() {
 
         ok.setEnabled(false);
-        ConfiguraCampos configuraCampos=new ConfiguraCampos();
+        ConfiguraCampos configuraCampos = new ConfiguraCampos();
         /* por defecto desactivado, hasta que haya algo en los campos */
-nombre=configuraCampos.configuraNombre(nombre);
-        nombre.addValueChangeListener(event->{
-        nombre=configuraCampos.configuraNombre(nombre);
-                
+        nombre = configuraCampos.configuraNombre(nombre);
+        nombre.addValueChangeListener(event -> {
+            nombre = configuraCampos.configuraNombre(nombre);
+
         });
         tipoVia.setAllowCustomValue(true);
         tipoVia.setItems("Calle", "Paseo", "Plaza", "Ctra.", "Parque");
@@ -139,7 +141,9 @@ nombre=configuraCampos.configuraNombre(nombre);
         userGrid.setItems(lista);
 
         VerticalLayout verticalGLOBAL = new VerticalLayout();
+        HorizontalLayout horizontalUsuarioServicios = new HorizontalLayout();
         HorizontalLayout horizontalUsuario = new HorizontalLayout();
+        HorizontalLayout horizontalServicios= new HorizontalLayout();
         HorizontalLayout horizontalDomicilio = new HorizontalLayout();
         HorizontalLayout horizontalCentro = new HorizontalLayout();
         HorizontalLayout horizontalBotones = new HorizontalLayout();
@@ -177,8 +181,13 @@ nombre=configuraCampos.configuraNombre(nombre);
         horizontalBotones.add(nuevo);
         horizontalBotones.add(ok);
         horizontalBotones.add(cancel);
-        verticalGLOBAL.add(cartel);
-        verticalGLOBAL.add(horizontalUsuario);
+        horizontalServicios.add(cartelServicios);
+         
+        
+        horizontalUsuarioServicios.add(horizontalUsuario,horizontalServicios);
+        verticalGLOBAL.add(cartelUsuario);
+        
+        verticalGLOBAL.add(horizontalUsuarioServicios);
         verticalGLOBAL.add(horizontalDomicilio);
         verticalGLOBAL.add(horizontalCentro);
         verticalGLOBAL.add(horizontalBotones);
