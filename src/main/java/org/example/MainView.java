@@ -1,5 +1,10 @@
 package org.example;
 
+import beans.CentrosBean;
+import beans.ServiciosBean;
+import daos.UsuarioDao;
+import beans.UsuarioBean;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -12,6 +17,8 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
+import daos.CentroDao;
+import daos.ServiciosDao;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -37,15 +44,17 @@ public class MainView extends HorizontalLayout {
     private TextField cp = new TextField("Código Postal");
     private DatePicker fechaNac = new DatePicker("Fecha de nacimiento");
     private ComboBox<String> tipoVia = new ComboBox("Tipo de vía");
+    private ComboBox<CentrosBean> comboCentro = new ComboBox("Centro");
+    private ComboBox<ServiciosBean> comboServicio = new ComboBox("Servicio");
     private Grid<UsuarioBean> userGrid = new Grid<>(UsuarioBean.class, false);
     private Binder<UsuarioBean> binder = new Binder();
     private Binder<Direccion> binderD = new Binder();
     private HashSet<UsuarioBean> lista = new UsuarioDao().getLista();
 
+
     /* Este método debería leer de la base de datos; 
 para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
      */
-
     public MainView() {
 
         ok.setEnabled(false);
@@ -56,7 +65,7 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
 
         binder.forField(dni).asRequired("El NIF es oblgatorio").bind(UsuarioBean::getDni, UsuarioBean::setDni);
         binder.forField(nombre).asRequired("Es obligatorio el  nombre").bind(UsuarioBean::getNombre, UsuarioBean::setNombre);
-        
+
         binder.forField(ape1).bind(UsuarioBean::getApe1, UsuarioBean::setApe1);
         binder.forField(ape2).bind(UsuarioBean::getApe2, UsuarioBean::setApe2);
         binder.forField(fechaNac).bind(UsuarioBean::getFechaNacimiento, UsuarioBean::setFechaNacimiento);
@@ -80,7 +89,7 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 usu.setDireccion(dir);
                 lista.add(usu);
                 userGrid.setItems(lista);
-                
+
                 dni.clear();
                 nombre.clear();
                 ape1.clear();
@@ -92,14 +101,14 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 ape1.clear();
                 fechaNac.clear();
                 tipoVia.clear();
-              
-                } catch (ValidationException ex) {
+
+            } catch (ValidationException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
         userGrid.addItemClickListener(e -> {
-            
+
             binder.readBean(e.getItem());
             /* rellena los campos en pantalla*/
             binderD.readBean(e.getItem().getDireccion());
@@ -124,8 +133,8 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         VerticalLayout verticalGLOBAL = new VerticalLayout();
         HorizontalLayout horizontalUsuario = new HorizontalLayout();
         HorizontalLayout horizontalDomicilio = new HorizontalLayout();
-        HorizontalLayout horizontalBotones =new HorizontalLayout();
-        
+        HorizontalLayout horizontalCentro = new HorizontalLayout();
+        HorizontalLayout horizontalBotones = new HorizontalLayout();
 
         verticalGLOBAL.add("Usuario");
 
@@ -134,6 +143,14 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         dni.setClearButtonVisible(true);
         dni.setMinLength(9);
         dni.setMaxLength(9);
+
+        comboCentro.setItems(new CentroDao().getLista());
+        comboCentro.setItemLabelGenerator(CentrosBean::getDescripcion);
+        comboCentro.addValueChangeListener(e -> {
+            comboServicio.setItems(new ServiciosDao().getListaPorCentro(e.getValue().getCodigo()));
+            comboServicio.setItemLabelGenerator(ServiciosBean::getDescripcion);
+            comboServicio.setWidth(60, Unit.VMIN);
+        });
 
         horizontalUsuario.add(dni);
         horizontalUsuario.add(nombre);
@@ -145,17 +162,19 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         horizontalDomicilio.add(numero);
         horizontalDomicilio.add(piso);
         horizontalDomicilio.add(cp);
-        
+
+        horizontalCentro.add(comboCentro);
+        horizontalCentro.add(comboServicio);
+
         horizontalBotones.add(nuevo);
         horizontalBotones.add(ok);
         horizontalBotones.add(cancel);
-        
+
         verticalGLOBAL.add(horizontalUsuario);
         verticalGLOBAL.add(horizontalDomicilio);
+        verticalGLOBAL.add(horizontalCentro);
         verticalGLOBAL.add(horizontalBotones);
         verticalGLOBAL.add(userGrid);
-
-        
 
     }
 
