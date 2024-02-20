@@ -60,8 +60,8 @@ public class MainView extends HorizontalLayout {
     private Binder<UsuarioBean> binder = new Binder();
     private Binder<Direccion> binderD = new Binder();
     private HashSet<UsuarioBean> lista = new UsuarioDao().getLista();
-    private CheckboxGroup<CentrosBean> checkBoxCentros = new CheckboxGroup<>();
-    private RadioButtonGroup<ServiciosBean> radioButtonServicios = new RadioButtonGroup<>();
+    private RadioButtonGroup<CentrosBean> radioButtonBoxCentros = new RadioButtonGroup<>();
+    private RadioButtonGroup<ServiciosBean> radioButtonBoxServicios = new RadioButtonGroup<>();
 
 
     /* Este método debería leer de la base de datos; 
@@ -147,11 +147,11 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 .setResizable(true);
         userGrid.setItems(lista);
 
-        checkBoxCentros.setItems(new CentrosDao().getLista());
-        checkBoxCentros.setItemLabelGenerator(CentrosBean::getDescripcion);
+        radioButtonBoxCentros.setItems(new CentrosDao().getLista());
+        radioButtonBoxCentros.setItemLabelGenerator(CentrosBean::getDescripcion);
 
-        radioButtonServicios.setItems(new ServiciosDao().getLista());
-        radioButtonServicios.setItemLabelGenerator(ServiciosBean::getDescripcion);
+        radioButtonBoxServicios.setItems(new ServiciosDao().getLista());
+        radioButtonBoxServicios.setItemLabelGenerator(ServiciosBean::getDescripcion);
 
         VerticalLayout verticalGLOBAL = new VerticalLayout();
         HorizontalLayout horizontalUsuario_Servicios = new HorizontalLayout();
@@ -178,6 +178,14 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
             comboServicio.setItemLabelGenerator(ServiciosBean::getDescripcion);
             comboServicio.setWidth(60, Unit.VMIN);
         });
+        radioButtonBoxCentros.addValueChangeListener(e->{
+            radioButtonBoxServicios.setItems(new ServiciosDao().getListaPorCentro(e.getValue().getCodigo()));
+            radioButtonBoxServicios.setItemLabelGenerator(ServiciosBean::getDescripcion);
+            comboCentro.setValue(e.getValue());
+        });
+        radioButtonBoxServicios.addValueChangeListener(e->{
+            comboServicio.setValue(e.getValue());
+        });
 
         horizontalUsuario.add(dni);
         horizontalUsuario.add(nombre);
@@ -196,8 +204,8 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         horizontalBotones.add(nuevo);
         horizontalBotones.add(ok);
         horizontalBotones.add(cancel);
-        verticalCentros.add(cartelCentros, checkBoxCentros);
-        verticalServicios.add(cartelServicios, radioButtonServicios);
+        verticalCentros.add(cartelCentros, radioButtonBoxCentros);
+        verticalServicios.add(cartelServicios, radioButtonBoxServicios);
         horizontal_Centros_Servicios.add(verticalCentros, verticalServicios);
 
         horizontalUsuario_Servicios.add(horizontalUsuario, horizontal_Centros_Servicios);
