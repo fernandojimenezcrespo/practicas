@@ -40,6 +40,7 @@ public class MainView extends HorizontalLayout {
     private H1 cartelUsuario = new H1("PRACTICANDO CON VAADIN");
     private H3 cartelServicios = new H3("SERVICIOS");
     private H3 cartelCentros = new H3("CENTROS");
+    private H3 cartelInicio= new H3("INICIO");
     private Button nuevo = new Button("Nuevo");
     private Button ok = new Button("Aceptar");
     private Button cancel = new Button("Cancelar");
