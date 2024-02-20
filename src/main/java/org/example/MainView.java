@@ -6,6 +6,7 @@ import daos.UsuarioDao;
 import beans.UsuarioBean;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,10 +17,12 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
-import daos.CentroDao;
+import daos.CentrosDao;
 import daos.ServiciosDao;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,7 +38,8 @@ public class MainView extends HorizontalLayout {
     antes de poder usarlo en el evento click
      */
     private H1 cartelUsuario = new H1("PRACTICANDO CON VAADIN");
-    private H2 cartelServicios= new H2("SERVICIOS");
+    private H3 cartelServicios = new H3("SERVICIOS");
+    private H3 cartelCentros = new H3("CENTROS");
     private Button nuevo = new Button("Nuevo");
     private Button ok = new Button("Aceptar");
     private Button cancel = new Button("Cancelar");
@@ -55,6 +59,8 @@ public class MainView extends HorizontalLayout {
     private Binder<UsuarioBean> binder = new Binder();
     private Binder<Direccion> binderD = new Binder();
     private HashSet<UsuarioBean> lista = new UsuarioDao().getLista();
+    private CheckboxGroup<CentrosBean> checkBoxCentros = new CheckboxGroup<>();
+    private RadioButtonGroup<ServiciosBean> radioButtonServicios = new RadioButtonGroup<>();
 
 
     /* Este método debería leer de la base de datos; 
@@ -140,10 +146,18 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 .setResizable(true);
         userGrid.setItems(lista);
 
+        checkBoxCentros.setItems(new CentrosDao().getLista());
+        checkBoxCentros.setItemLabelGenerator(CentrosBean::getDescripcion);
+
+        radioButtonServicios.setItems(new ServiciosDao().getLista());
+        radioButtonServicios.setItemLabelGenerator(ServiciosBean::getDescripcion);
+
         VerticalLayout verticalGLOBAL = new VerticalLayout();
-        HorizontalLayout horizontalUsuarioServicios = new HorizontalLayout();
+        HorizontalLayout horizontalUsuario_Servicios = new HorizontalLayout();
         HorizontalLayout horizontalUsuario = new HorizontalLayout();
-        HorizontalLayout horizontalServicios= new HorizontalLayout();
+        HorizontalLayout horizontal_Centros_Servicios = new HorizontalLayout();
+        VerticalLayout verticalCentros = new VerticalLayout();
+        VerticalLayout verticalServicios = new VerticalLayout();
         HorizontalLayout horizontalDomicilio = new HorizontalLayout();
         HorizontalLayout horizontalCentro = new HorizontalLayout();
         HorizontalLayout horizontalBotones = new HorizontalLayout();
@@ -156,7 +170,7 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         dni.setMinLength(9);
         dni.setMaxLength(9);
 
-        comboCentro.setItems(new CentroDao().getLista());
+        comboCentro.setItems(new CentrosDao().getLista());
         comboCentro.setItemLabelGenerator(CentrosBean::getDescripcion);
         comboCentro.addValueChangeListener(e -> {
             comboServicio.setItems(new ServiciosDao().getListaPorCentro(e.getValue().getCodigo()));
@@ -181,13 +195,14 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
         horizontalBotones.add(nuevo);
         horizontalBotones.add(ok);
         horizontalBotones.add(cancel);
-        horizontalServicios.add(cartelServicios);
-         
-        
-        horizontalUsuarioServicios.add(horizontalUsuario,horizontalServicios);
+        verticalCentros.add(cartelCentros, checkBoxCentros);
+        verticalServicios.add(cartelServicios, radioButtonServicios);
+        horizontal_Centros_Servicios.add(verticalCentros, verticalServicios);
+
+        horizontalUsuario_Servicios.add(horizontalUsuario, horizontal_Centros_Servicios);
         verticalGLOBAL.add(cartelUsuario);
-        
-        verticalGLOBAL.add(horizontalUsuarioServicios);
+
+        verticalGLOBAL.add(horizontalUsuario_Servicios);
         verticalGLOBAL.add(horizontalDomicilio);
         verticalGLOBAL.add(horizontalCentro);
         verticalGLOBAL.add(horizontalBotones);

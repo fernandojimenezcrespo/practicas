@@ -12,7 +12,7 @@ import java.util.HashSet;
  *
  * @author 06553669A
  */
-public class CentroDao {
+public class CentrosDao {
     
     public HashSet<CentrosBean> getLista (){
         HashSet<CentrosBean> listaCentros = new HashSet<>();
