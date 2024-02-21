@@ -8,16 +8,16 @@ package beans;
  *
  * @author 06553669A
  */
-public class CentrosBean {
-    private Integer codigo;
+public class CentrosBean implements Comparable<CentrosBean>{
+    private int codigo;
     private String  descripcion;
 
-    public CentrosBean(Integer codigo, String descripcion) {
+    public CentrosBean(int codigo, String descripcion) {
         this.codigo = codigo;
         this.descripcion = descripcion;
     }
 
-    public Integer getCodigo() {
+    public int getCodigo() {
         return codigo;
     }
 
@@ -32,5 +32,19 @@ public class CentrosBean {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    @Override
+    public int compareTo(CentrosBean o) {
+        if (this.getCodigo()==o.getCodigo())
+            return 0;
+        else if(this.getCodigo()>o.getCodigo()) return 1;
+                else
+            return -1;
+               
+           
+          //return this.getCodigo().compareTo(o.getCodigo());
+          
+    }
+    
     
 }

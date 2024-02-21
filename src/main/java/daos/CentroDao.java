@@ -6,7 +6,12 @@ package daos;
 
 import beans.CentrosBean;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  *
@@ -18,12 +23,23 @@ public class CentroDao {
         HashSet<CentrosBean> listaCentros = new HashSet<>();
         
         LocalDate fecha = LocalDate.of(2000, 12, 8);
-        CentrosBean centro = new CentrosBean (1, "HNSS");
+       
+        CentrosBean centro = new CentrosBean (1, "1");
         listaCentros.add(centro);
-        centro = new CentrosBean (2, "H.PROVINCIAL");
+        centro = new CentrosBean (1, "1");
         listaCentros.add(centro);
         
+         centro = new CentrosBean (1, "1");
+        listaCentros.add(centro);
         
+         centro = new CentrosBean (1, "1");
+        listaCentros.add(centro);
+        
+        /*
+        List<CentrosBean> lista= new ArrayList<CentrosBean>(listaCentros);
+        Collections.sort(lista);
+        listaCentros=new HashSet<CentrosBean>(lista);
+        */
         
         return listaCentros;
     

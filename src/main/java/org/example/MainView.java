@@ -6,6 +6,8 @@ import daos.UsuarioDao;
 import beans.UsuarioBean;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,6 +52,7 @@ public class MainView extends HorizontalLayout {
     private Binder<UsuarioBean> binder = new Binder();
     private Binder<Direccion> binderD = new Binder();
     private HashSet<UsuarioBean> lista = new UsuarioDao().getLista();
+     CheckboxGroup<String> checkTipos= new CheckboxGroup<>();
 
 
     /* Este método debería leer de la base de datos; 
@@ -151,7 +154,17 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
             comboServicio.setItemLabelGenerator(ServiciosBean::getDescripcion);
             comboServicio.setWidth(60, Unit.VMIN);
         });
-
+        ArrayList arrTipos= new ArrayList();
+        arrTipos.add("TIPO 11");
+        arrTipos.add("TIPO 12");
+        arrTipos.add("TIPO 13");
+        arrTipos.add("TIPO 14");
+        arrTipos.add("TIPO 15");
+        arrTipos.add("TIPO 16");
+        arrTipos.add("TIPO 17");
+        checkTipos.setItems(arrTipos);
+        
+        horizontalUsuario.add(checkTipos);
         horizontalUsuario.add(dni);
         horizontalUsuario.add(nombre);
         horizontalUsuario.add(ape1);
