@@ -22,6 +22,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
+import conexiones.MySql;
 import daos.CentrosDao;
 import daos.ServiciosDao;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class MainView extends HorizontalLayout {
     private H1 cartelUsuario = new H1("PRACTICANDO CON VAADIN");
     private H3 cartelServicios = new H3("SERVICIOS");
     private H3 cartelCentros = new H3("CENTROS");
-    private H3 cartelInicio= new H3("INICIO 2");
+    private H3 cartelInicio = new H3("INICIO 2");
     private Button nuevo = new Button("Nuevo");
     private Button ok = new Button("Aceptar");
     private Button cancel = new Button("Cancelar");
@@ -59,7 +60,7 @@ public class MainView extends HorizontalLayout {
     private Grid<UsuarioBean> userGrid = new Grid<>(UsuarioBean.class, false);
     private Binder<UsuarioBean> binder = new Binder();
     private Binder<Direccion> binderD = new Binder();
-    private HashSet<UsuarioBean> lista = new UsuarioDao().getLista();
+    private HashSet<UsuarioBean> listaUsuarios =  new UsuarioDao().getListaBBDD();
     private RadioButtonGroup<CentrosBean> radioButtonBoxCentros = new RadioButtonGroup<>();
     private RadioButtonGroup<ServiciosBean> radioButtonBoxServicios = new RadioButtonGroup<>();
 
@@ -68,7 +69,8 @@ public class MainView extends HorizontalLayout {
 para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
      */
     public MainView() {
-
+        MySql conexionMySql = new MySql();
+ 
         ok.setEnabled(false);
         ConfiguraCampos configuraCampos = new ConfiguraCampos();
         /* por defecto desactivado, hasta que haya algo en los campos */
@@ -104,8 +106,8 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 binder.writeBean(usu);
 
                 usu.setDireccion(dir);
-                lista.add(usu);
-                userGrid.setItems(lista);
+                listaUsuarios.add(usu);
+                userGrid.setItems(listaUsuarios);
 
                 dni.clear();
                 nombre.clear();
@@ -145,7 +147,7 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
                 .setResizable(true);
         userGrid.addColumn(UsuarioBean::getDireccion).setHeader("Dirección")
                 .setResizable(true);
-        userGrid.setItems(lista);
+        userGrid.setItems(listaUsuarios);
 
         radioButtonBoxCentros.setItems(new CentrosDao().getLista());
         radioButtonBoxCentros.setItemLabelGenerator(CentrosBean::getDescripcion);
@@ -178,12 +180,12 @@ para trabajar con esto hemos definido valores en el código (en UsuarioDao.java)
             comboServicio.setItemLabelGenerator(ServiciosBean::getDescripcion);
             comboServicio.setWidth(60, Unit.VMIN);
         });
-        radioButtonBoxCentros.addValueChangeListener(e->{
+        radioButtonBoxCentros.addValueChangeListener(e -> {
             radioButtonBoxServicios.setItems(new ServiciosDao().getListaPorCentro(e.getValue().getCodigo()));
             radioButtonBoxServicios.setItemLabelGenerator(ServiciosBean::getDescripcion);
             comboCentro.setValue(e.getValue());
         });
-        radioButtonBoxServicios.addValueChangeListener(e->{
+        radioButtonBoxServicios.addValueChangeListener(e -> {
             comboServicio.setValue(e.getValue());
         });
 

@@ -7,6 +7,7 @@ package daos;
 
 
 import beans.UsuarioBean;
+import conexiones.MySql;
 import java.time.LocalDate;
 import java.util.HashSet;
 import org.example.Direccion;
@@ -34,6 +35,11 @@ public class UsuarioDao {
         return lista;
         
     };
-    
+    public HashSet<UsuarioBean> getListaBBDD (){
+        HashSet<UsuarioBean> listaBBDD = new HashSet<>();
+        MySql mySql=new MySql();
+        listaBBDD=mySql.selectUsuarios();
+        return listaBBDD;
+    }
     
 }
